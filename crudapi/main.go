@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Todo struct {
@@ -13,7 +15,7 @@ type Todo struct {
 	Completed bool   `json:"completed"`
 }
 
-func main() {
+func performGetRequest() {
 	res, err := http.Get("https://jsonplaceholder.typicode.com/todos/1")
 	if err != nil {
 		panic(err)
@@ -52,4 +54,43 @@ func main() {
 	fmt.Println("ID :", todo.Id)
 	fmt.Println("Title :", todo.Title)
 	fmt.Println("Completed :", todo.Completed)
+}
+
+func performPostRequest() {
+	todo := Todo{
+		UserId:    23,
+		Id:        1,
+		Title:     "New Todo",
+		Completed: false,
+	}
+
+	//convert struct to json data
+	jsonData, err := json.Marshal(todo)
+	if err != nil {
+		panic(err)
+	}
+
+	//convert json data to string
+	jsonString := string(jsonData)
+	fmt.Println("JSON Data :", jsonString)
+
+	//convert string data to reader
+	jsonReader := strings.NewReader(jsonString)
+	myURL := "https://jsonplaceholder.typicode.com/todos"
+	res, err := http.Post(myURL, "application/json", jsonReader)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	data, _ := ioutil.ReadAll(res.Body)
+	fmt.Println("Response :", string(data))
+}
+
+func main() {
+	//?perform get request
+	performGetRequest()
+
+	//?perform post request
+	performPostRequest()
 }
