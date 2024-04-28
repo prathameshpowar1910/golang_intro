@@ -87,10 +87,53 @@ func performPostRequest() {
 	fmt.Println("Response :", string(data))
 }
 
+func preformUpdateRequest() {
+	todo := Todo{
+		UserId:    23,
+		Id:        1,
+		Title:     "Changed Todo",
+		Completed: false,
+	}
+
+	//convert struct to json data
+	jsonData, err := json.Marshal(todo)
+	if err != nil {
+		panic(err)
+	}
+
+	//convert json data to string
+	jsonString := string(jsonData)
+	fmt.Println("JSON Data :", jsonString)
+
+	//convert string data to reader
+	jsonReader := strings.NewReader(jsonString)
+
+	myURL := "https://jsonplaceholder.typicode.com/todos/1"
+
+	req, err := http.NewRequest(http.MethodPut, myURL, jsonReader)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	data, _ := ioutil.ReadAll(res.Body)
+	fmt.Println("Response :", string(data))
+	fmt.Println("Status Code :", res.Status)
+}
+
 func main() {
 	//?perform get request
-	performGetRequest()
+	// performGetRequest()
 
 	//?perform post request
-	performPostRequest()
+	// performPostRequest()
+
+	//?perform update request
+	preformUpdateRequest()
 }
