@@ -127,6 +127,27 @@ func preformUpdateRequest() {
 	fmt.Println("Status Code :", res.Status)
 }
 
+func perfromDeleteRequest() {
+	const myURL = "https://jsonplaceholder.typicode.com/todos/1"
+
+	//create delete request
+
+	req, err := http.NewRequest(http.MethodDelete, myURL, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	//send the request
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	fmt.Println("Status Code :", res.Status)
+}
+
 func main() {
 	//?perform get request
 	// performGetRequest()
@@ -135,5 +156,8 @@ func main() {
 	// performPostRequest()
 
 	//?perform update request
-	preformUpdateRequest()
+	// preformUpdateRequest()
+
+	//?perform delete request
+	perfromDeleteRequest()
 }
